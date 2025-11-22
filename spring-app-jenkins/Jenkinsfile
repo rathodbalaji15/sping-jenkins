@@ -18,13 +18,13 @@ pipeline {
 
         stage('Build Maven') {
             steps {
-                sh "mvn -B -DskipTests clean package"
+                sh "mvn -B -DskipTests -f spring-app-jenkins/pom.xml clean package"
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${IMAGE} ."
+                sh "docker build -t ${IMAGE} spring-app-jenkins"
             }
         }
 
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh "kubectl apply -f k8s"
+                sh "kubectl apply -f spring-app-jenkins/k8s"
             }
         }
     }
