@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE = "spring-jenkins-app:latest"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Maven') {
+            steps {
+                sh "mvn -B -DskipTests -f spring-app-jenkins/pom.xml clean package"
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t ${IMAGE} spring-app-jenkins"
+            }
+        }
+
+        stage('Load Image into Minikube') {
+            steps {
+                sh "minikube image load ${IMAGE}"
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh "kubectl apply -f spring-app-jenkins/k8s"
+            }
+        }
+    }
+}

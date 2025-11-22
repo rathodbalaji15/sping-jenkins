@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-jenkins-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-jenkins-app
+  template:
+    metadata:
+      labels:
+        app: spring-jenkins-app
+    spec:
+      containers:
+        - name: app
+          image: spring-jenkins-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
